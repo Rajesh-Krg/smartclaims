@@ -40,3 +40,5 @@ Final full-stack result: 4/4 Chromium workflows passed against the Compose front
 Process restart persistence: captured all 13 Compose claims with their versions, restarted only the API container, waited for readiness, and verified the exact same ID→version mapping. PostgreSQL retained the records independently of the API process.
 
 Screenshot evidence is committed under `artifacts/13-rebuild/screenshots/`. Pull request: https://github.com/Rajesh-Krg/smartclaims/pull/5. The CLI check-status request was denied by GitHub GraphQL permissions, so hosted CI is unverified; local test/build/browser evidence above is independently recorded.
+
+Hosted CI follow-up: the connected GitHub API provided logs despite the CLI GraphQL restriction. Both initial workflows failed before checkout with Docker `unknown shorthand flag: 'U' in -U`. GitHub runner argument parsing did not group a single-quoted multiword `--health-cmd`. Changed both service option strings to double quotes, preserving all database readiness checks. Follow-up CI runs verify the corrected setup.
