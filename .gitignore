@@ -11,3 +11,4 @@ coverage/
 work/
 playwright-report/
 test-results/
+*.tsbuildinfo

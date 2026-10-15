@@ -1,6 +1,6 @@
 """Explicit claims lifecycle; synthetic prototype only."""
 from enum import Enum
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 
 class Stage(str, Enum):
     SUBMITTED = "SUBMITTED"
@@ -28,11 +28,10 @@ ALLOWED = {
 }
 
 class TransitionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
     target: Stage
     expected_version: int = Field(ge=1)
     reason: str = Field(min_length=3, max_length=1000)
-    actor: str = Field(min_length=1, max_length=100)
-    # This actor field is demo-only; never trust client-provided actor in production.
 
 def can_transition(current: Stage, target: Stage) -> bool:
     return target in ALLOWED[current]

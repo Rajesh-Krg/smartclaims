@@ -16,19 +16,19 @@ Missing credentials must fail closed; cross-tenant IDs return 404; duplicate sub
 ### Task 1: Persistent API
 Files: backend/app/{config,db,models,schemas,auth,main}.py, backend/alembic/, backend/tests/, backend/requirements*.txt.
 Produces authenticated /api/v1/me, /claims, /claims/{id}, /claims/{id}/events and /claims/{id}/transitions; health/readiness.
-- [ ] Write pytest integration cases for auth/validation/isolation/idempotency/audit/concurrency/restart persistence. Run against old API and observe failures.
-- [ ] Implement models, migration, server principals, typed routes, atomic updates and scoped queries.
-- [ ] Run complete pytest suite against PostgreSQL, require all pass; commit.
+- [x] Write pytest integration cases for auth/validation/isolation/idempotency/audit/concurrency/restart persistence. Run against old API and observe failures.
+- [x] Implement models, migration, server principals, typed routes, atomic updates and scoped queries.
+- [x] Run complete pytest suite against PostgreSQL, require all pass; commit.
 
 ### Task 2: Browser workflow
 Files: apps/web/src/{App,api,ClaimQueue,Fnol,ClaimDetail}.tsx/ts, styles.css, tests, package manifests.
 Consumes Task 1 contracts. Produces integrated queue/dashboard/FNOL/detail screens.
-- [ ] Write queue/error and browser workflow tests, observe absent behavior.
-- [ ] Implement accessible shell, queue controls, API session, multistep FNOL and timeline; unavailable future modules labeled.
-- [ ] Run RTL, TypeScript/Vite build, then Playwright against real API. Require persisted claim after reload and keyboard/mobile checks; commit.
+- [x] Write queue/error and browser workflow tests, observe absent behavior.
+- [x] Implement accessible shell, queue controls, API session, multistep FNOL and timeline; unavailable future modules labeled.
+- [x] Run RTL, TypeScript/Vite build, then Playwright against real API. Require persisted claim after reload and keyboard/mobile checks; commit.
 
 ### Task 3: Reproducibility and delivery
 Files: docker-compose.yml, Dockerfiles, .env.example, scripts/, .github/workflows/, README.md, artifacts/13-rebuild/.
-- [ ] Add Compose PostgreSQL/API/web with healthchecks and explicit secret configuration, pinned requirements/lockfile, seed and verification commands, CI services and browser tests.
-- [ ] Start services, verify health, run full tests/build and screenshots. Record exact results, startup, limitations and failures repaired.
-- [ ] Review branch for authorization leaks and secrets, commit, push requested new branch and create PR; do not merge.
+- [x] Add Compose PostgreSQL/API/web with healthchecks and explicit secret configuration, pinned requirements/lockfile, seed and verification commands, CI services and browser tests.
+- [x] Start services, verify health, run full tests/build and screenshots. Record exact results, startup, limitations and failures repaired.
+- [x] Review branch for authorization leaks and secrets, commit, push requested new branch and create PR; do not merge.
