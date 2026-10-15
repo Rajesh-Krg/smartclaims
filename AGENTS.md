@@ -5,10 +5,15 @@ Build SmartClaims as an enterprise auto-insurance claims coordination platform. 
 ## Architecture
 - UI: responsive, accessible React/TypeScript application (prototype in prototype/index.html).
 - API: Python FastAPI with typed Pydantic contracts.
-- Data: PostgreSQL with migrations in a subsequent increment.
+- Data: PostgreSQL with SQLAlchemy and explicit Alembic migrations.
 - Orchestration: deterministic claims state machine, plus bounded AI agent recommendations.
 - Integrations: adapters for member/policy/vehicle, repair providers, dealers and notifications.
 - Infrastructure: Docker, CI, later infrastructure-as-code for staging.
+
+## Current milestone
+- Milestone 1 uses configured synthetic bearer identities; OIDC/MFA remains Milestone 2.
+- See artifacts/13-rebuild for the current design, plan and verification evidence.
+- Run real PostgreSQL API tests plus RTL, build and Playwright before claiming acceptance.
 
 ## Mandatory engineering rules
 - Maintain tenant isolation and least privilege. No production PII in demos.

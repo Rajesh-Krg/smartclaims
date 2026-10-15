@@ -1,18 +1,51 @@
-name: Web build
+name: Web and browser acceptance
 on:
   push:
-    branches: [main, feat/**, docs/**]
+    branches: [main, 'feat/**', 'rebuild/**']
   pull_request:
 jobs:
-  build:
+  browser:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: apps/web
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: smartclaims
+          POSTGRES_USER: smartclaims
+          POSTGRES_PASSWORD: synthetic-ci-only
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U smartclaims -d smartclaims"
+          --health-interval 3s --health-timeout 3s --health-retries 20
+    env:
+      DATABASE_URL: postgresql+psycopg://smartclaims:synthetic-ci-only@localhost:5432/smartclaims
+      DEMO_IDENTITIES_FILE: ${{ github.workspace }}/work/demo-identities.json
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: npm install --no-audit --no-fund
-      - run: npm run build
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - run: pip install -r backend/requirements-dev.txt
+      - run: npm --prefix apps/web ci
+      - run: python scripts/configure_demo.py
+      - run: alembic -c backend/alembic.ini upgrade head
+      - run: npm --prefix apps/web test
+      - run: npm --prefix apps/web run build
+      - run: cd apps/web && npx playwright install --with-deps chromium
+      - name: Start services and seed synthetic claims
+        run: |
+          uvicorn app.main:app --app-dir backend --host 127.0.0.1 --port 8000 --no-access-log > work/api.log 2>&1 &
+          npm --prefix apps/web run dev > work/web.log 2>&1 &
+          python scripts/wait_ready.py
+          python scripts/seed.py
+      - run: npm --prefix apps/web run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-screenshots
+          path: work/screenshots/
