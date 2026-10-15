@@ -38,3 +38,5 @@ The full PostgreSQL/API/web images were built and started as project `smartclaim
 Final full-stack result: 4/4 Chromium workflows passed against the Compose frontend on port 5174 and its API/database. Final native checks: 15/15 pytest, 4/4 RTL, and production build passed. pytest reports one upstream Starlette/AnyIO deprecation warning; no tests were skipped or suppressed. Hosted GitHub Actions results remain pending the PR runs.
 
 Process restart persistence: captured all 13 Compose claims with their versions, restarted only the API container, waited for readiness, and verified the exact same ID→version mapping. PostgreSQL retained the records independently of the API process.
+
+Screenshot evidence is committed under `artifacts/13-rebuild/screenshots/`. Pull request: https://github.com/Rajesh-Krg/smartclaims/pull/5. The CLI check-status request was denied by GitHub GraphQL permissions, so hosted CI is unverified; local test/build/browser evidence above is independently recorded.
