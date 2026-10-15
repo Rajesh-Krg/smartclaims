@@ -12,27 +12,37 @@ Synthetic enterprise auto-claims foundation: React/TypeScript/Vite/Tailwind UI, 
 
 This is a synthetic development milestone. OIDC/MFA, uploads, provider/dealer operations, AI, payments, administration, production controls and AWS deployment are unavailable. The sidebar labels future modules. No real inventory, fitment, insurance decision, messaging or financial integration is connected.
 
-## macOS setup (no Homebrew)
+## Mac: open the app locally (Docker Desktop only)
 
-Install Git from Apple's command line tools or git-scm.com, Docker Desktop from docker.com, Python 3.12 from python.org and Node.js 22 LTS from nodejs.org. Start Docker Desktop. From this repository root:
-
-```sh
-python3 scripts/configure_demo.py
-docker compose up --build -d
-```
-
-Open **http://localhost:5173**. Open `work/demo-identities.json` locally and copy the JSON key whose object has `subject: demo-adjuster` into the token input. Never share these private tokens. The generator does not print tokens and refuses to overwrite existing configuration. Auditors can read; policyholders see their own submissions. API docs: http://localhost:8000/docs. Claims routes require `Authorization: Bearer <configured-token>`; `/health` and `/ready` expose no claim data.
-
-Optional fictional fixtures (Python virtual environment):
+Start Docker Desktop and wait for its engine to be running. From this repository root:
 
 ```sh
-python3 -m venv .venv
-.venv/bin/pip install -r backend/requirements-dev.txt
-.venv/bin/python scripts/wait_ready.py
-.venv/bin/python scripts/seed.py
+bash scripts/start-local.sh
 ```
 
-`docker compose down` stops services and preserves the PostgreSQL named volume. Do not add `-v` unless intentionally deleting local synthetic records. Ports bind only to loopback. Use TLS and a real identity provider before exposing beyond a trusted development environment. Docker serves a development Vite server, not a production web deployment.
+The launcher generates private synthetic credentials (preserving existing setup), builds and starts PostgreSQL/API/web, waits for readiness, seeds 12 fictional claims, copies the adjuster token to the Mac clipboard, and opens **http://localhost:5173**. Paste with **Command-V** into **Synthetic session token**, then click **Open workspace**. No Homebrew, Python or Node installation is required for this path; Python runs inside Docker.
+
+For a fresh checkout:
+
+```sh
+git clone --branch rebuild/smartclaims-v2 https://github.com/Rajesh-Krg/smartclaims.git smartclaims-local
+cd smartclaims-local
+bash scripts/start-local.sh
+```
+
+If the folder already exists, use that checkout rather than cloning over it. If Git is missing, macOS offers Apple's command-line tools when you run `git`; Homebrew is not needed.
+
+Stop with `docker compose -p smartclaims-local down`. Your fictional claims remain stored in its PostgreSQL volume. Relaunch with the same command to copy your token again. For logs: `docker compose -p smartclaims-local logs --tail=80`.
+
+If default ports are occupied, use:
+
+```sh
+SMARTCLAIMS_DB_PORT=5433 SMARTCLAIMS_API_PORT=8001 SMARTCLAIMS_WEB_PORT=5174 bash scripts/start-local.sh
+```
+
+The launcher opens the selected web port. Never share the generated token or `work/demo-identities.json`. Ports bind only to your Mac's loopback interface. The Docker UI is a development server; it is not a production deployment. API docs are at http://localhost:8000/docs (or your selected API port); claims endpoints require the configured bearer token.
+
+An address beginning with `localhost` on the Codex cloud machine cannot open this app on your Mac. Running this launcher **on your Mac** creates your own local app and database; no port forwarding is needed.
 
 ## Native development
 

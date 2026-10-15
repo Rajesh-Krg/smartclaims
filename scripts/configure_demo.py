@@ -21,7 +21,7 @@ for subject, tenant, role in [('demo-adjuster','synthetic-insurance','adjuster')
 identity_file.write_text(json.dumps(identities, indent=2)+'\n')
 identity_file.chmod(0o600)
 password = secrets.token_urlsafe(24)
-env_file.write_text(f'POSTGRES_PASSWORD={password}\nDATABASE_URL=postgresql+psycopg://smartclaims:{password}@127.0.0.1:5432/smartclaims\nDEMO_IDENTITIES_FILE={identity_file}\n')
+env_file.write_text(f'POSTGRES_PASSWORD={password}\nDATABASE_URL=postgresql+psycopg://smartclaims:{password}@127.0.0.1:5432/smartclaims\nDEMO_IDENTITIES_FILE={Path(os.environ.get('HOST_PROJECT_ROOT', str(root))) / 'work' / 'demo-identities.json'}\n')
 with env_file.open('a') as stream:
     stream.write(f'LOCAL_UID={os.getuid()}\nLOCAL_GID={os.getgid()}\n')
 env_file.chmod(0o600)
