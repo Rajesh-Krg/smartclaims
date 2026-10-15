@@ -15,6 +15,7 @@ from .db import engine, session
 from .models import ClaimRecord, ClaimEvent
 from .schemas import Claim, ClaimCreate, StageEvent
 from .workflow import Stage, TransitionRequest, can_transition
+from .queue import router as queue_router
 
 @asynccontextmanager
 async def lifespan(app):
@@ -22,6 +23,7 @@ async def lifespan(app):
     yield
 
 app = FastAPI(title='SmartClaims synthetic API', version='1.0.0', lifespan=lifespan)
+app.include_router(queue_router)
 
 @app.exception_handler(RequestValidationError)
 async def validation_error(request, exc):
